@@ -1,0 +1,24 @@
+{
+  "name": "@josephmark/createstyle",
+  "version": "1.0.0",
+  "description": "A simple utility for creating React components with pre-determined classes",
+  "main": "./lib/cjs/index.js",
+  "scripts": {
+    "test": "eslint ./src/* && tsc --noEmit"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/whoisjosephmark/createStyle.git"
+  },
+  "keywords": [
+    "react",
+    "tailwind",
+    "typescript"
+  ],
+  "author": "@floatingdino",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/whoisjosephmark/createStyle/issues"
+  },
+  "homepage": "https://github.com/whoisjosephmark/createStyle#readme"
+}

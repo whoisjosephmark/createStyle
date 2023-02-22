@@ -4,7 +4,10 @@
   "description": "A simple utility for creating React components with pre-determined classes",
   "main": "./lib/cjs/index.js",
   "scripts": {
-    "test": "eslint ./src/* && tsc --noEmit"
+    "test": "eslint ./src/* && tsc --noEmit",
+    "build": "npm run build:esm && npm run build:cjs",
+    "build:esm": "tsc",
+    "build:cjs": "tsc --module commonjs --outDir lib/cjs"
   },
   "repository": {
     "type": "git",
@@ -22,7 +25,7 @@
   },
   "homepage": "https://github.com/whoisjosephmark/createStyle#readme",
   "devDependencies": {
-    "@josephmark/eslint-config-react": "^1.0.1",
+    "@josephmark/eslint-config-react": "^1.0.5",
     "eslint": "^8.34.0",
     "prettier": "^2.8.4",
     "typescript": "^4.9.5"

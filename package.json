@@ -19,6 +19,12 @@
     "tailwind",
     "typescript"
   ],
+  "files": [
+    "lib/**/*.js",
+    "lib/**/*.jsx",
+    "lib/**/*.d.ts",
+    "lib/**/*.map"
+  ],
   "author": "@floatingdino",
   "license": "MIT",
   "bugs": {

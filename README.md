@@ -1,4 +1,4 @@
-# CreateStyle
+# createStyle
 
 createStyle is a simple utility for creating reusable styled React components focused around CSS classes rather than discrete styles.
 
@@ -7,6 +7,14 @@ It works great for Tailwind based styling frameworks and offers a fast way to st
 Basically it's `styled-components` for Tailwind.
 
 Obviously it's built in Typescript and has both ES Modules and CJS support.
+
+## Installation
+
+To use `createStyle` in your project, simply install it with npm or your preferred package manager.
+
+```bash
+npm install @josephmark/createstyle
+```
 
 ## Basic usage
 
@@ -36,11 +44,15 @@ const Header = () => (
 
 ## API
 
+`createStyle(defaultTag, classes, defaultProps)`
+
 `createStyle` is a function that accepts three arguments
 
-1. Default Tag - the semantic HTML tag you want in the DOM whenever you use this element (this can be overwritten later)
-2. Classes - the CSS class names you want applied to the element by default (these can be appended to later)
-3. Default Props - tag props you want to set on the element other than class, including display name (for devtools)
+1. Default Tag (required) - the semantic HTML tag you want in the DOM whenever you use this element (this can be overwritten later)
+2. Classes (optional) - the CSS class names you want applied to the element by default (these can be appended to later)
+3. Default Props (optional) - tag props you want to set on the element other than class, including display name (for devtools)
+
+The function returns a React component with `forwardRef`.
 
 ## Advanced Usage
 

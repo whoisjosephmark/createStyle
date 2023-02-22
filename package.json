@@ -1,13 +1,14 @@
 {
   "name": "@josephmark/createstyle",
-  "version": "1.0.0",
+  "version": "0.1.0",
   "description": "A simple utility for creating React components with pre-determined classes",
   "main": "./lib/cjs/index.js",
   "scripts": {
     "test": "eslint ./src/* && tsc --noEmit",
     "build": "npm run build:esm && npm run build:cjs",
     "build:esm": "tsc",
-    "build:cjs": "tsc --module commonjs --outDir lib/cjs"
+    "build:cjs": "tsc --module commonjs --outDir lib/cjs",
+    "prepublishOnly": "npm run -s build"
   },
   "repository": {
     "type": "git",

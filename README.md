@@ -124,3 +124,19 @@ const MyComponent = () => {
   return <Container ref={ref} />
 }
 ```
+
+### Retrieving class names from a tag
+
+```tsx
+import type { FC, HTMLAttributes, ReactNode } from "react"
+import createStyle from "@josephmark/createstyle"
+
+const P = createStyle("p", "leading-[1.2] text-[1rem]")
+
+const AppendsParagraphClasses: FC<{
+  children: ReactNode
+  Tag: FC<HTMLAttributes>
+}> = ({ Tag, children }) => {
+  return <Tag className={P.classNames}>{children}</Tag>
+}
+```

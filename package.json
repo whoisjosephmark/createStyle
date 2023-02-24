@@ -1,6 +1,6 @@
 {
   "name": "@josephmark/createstyle",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "A simple utility for creating React components with pre-determined classes",
   "main": "./lib/cjs/index.js",
   "module": "./lib/esm/index.js",

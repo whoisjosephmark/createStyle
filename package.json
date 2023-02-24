@@ -3,6 +3,15 @@
   "version": "1.1.0",
   "description": "A simple utility for creating React components with pre-determined classes",
   "main": "./lib/cjs/index.js",
+  "module": "./lib/esm/index.js",
+  "types": "./lib/esm/index.d.ts",
+  "exports": {
+    ".": {
+      "require": "./lib/cjs/index.js",
+      "import": "./lib/esm/index.js",
+      "types": "./lib/esm/index.d.ts"
+    }
+  },
   "scripts": {
     "test": "eslint ./src/* && tsc --noEmit",
     "build": "npm run build:esm && npm run build:cjs",

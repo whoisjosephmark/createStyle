@@ -8,6 +8,8 @@ Basically it's `styled-components` for Tailwind.
 
 Obviously it's built in Typescript and has both ES Modules and CJS support.
 
+Oh yeah, it doesn't have any dependencies and is super tiny (~1kb minified, ~500b gzipped)
+
 ## Installation
 
 To use `createStyle` in your project, simply install it with npm or your preferred package manager.
@@ -55,6 +57,18 @@ const Header = () => (
 The function returns a React component with `forwardRef`.
 
 ## Advanced Usage
+
+### Overwriting HTML Tags
+
+```tsx
+import createStyle from "@josephmark/createstyle"
+
+const H3 = createStyle("h3", "text-lg tracking-wide")
+
+const Header = () => (
+  <H3 as="h1">createStyle is an open-source element generator</H3>
+)
+```
 
 ### Using Generics
 

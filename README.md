@@ -154,3 +154,29 @@ const AppendsParagraphClasses: FC<{
   return <Tag className={P.classNames}>{children}</Tag>
 }
 ```
+
+### Theme-able components
+
+```tsx
+import type { FC, ReactNode } from "react"
+import createStyle from "@josephmark/createstyle"
+
+const SerifHeading = createStyle("h2", "font-serif text-lg")
+const SansHeading = createStyle("h2", "font-sans text-xl tracking-tight")
+
+const THEMES = {
+  serif: SerifHeading,
+  sans: SansHeading,
+}
+
+type ThemableProps = {
+  theme: keyof typeof THEMES
+  children: ReactNode
+}
+
+const ThemableComponent: FC<ThemableProps> = ({ theme, children }) => {
+  const C = THEMES[theme]
+
+  return <C>{children}</C>
+}
+```

@@ -1,4 +1,10 @@
-import { AllHTMLAttributes, createElement, forwardRef } from "react"
+import {
+  AllHTMLAttributes,
+  createElement,
+  forwardRef,
+  ForwardRefExoticComponent,
+  RefAttributes,
+} from "react"
 
 type ElementType =
   | HTMLDivElement
@@ -13,6 +19,10 @@ export type CustomTagArgs<T = ElementType> = {
   as?: keyof JSX.IntrinsicElements
   inert?: string | null
 } & AllHTMLAttributes<T>
+
+export type CustomTag<T = ElementType> = {
+  classNames?: string
+} & ForwardRefExoticComponent<CustomTagArgs<T> & RefAttributes<T>>
 
 /**
  * Creates a re-usable element with pre-set classnames
@@ -40,7 +50,7 @@ export default function createStyle<T = ElementType>(
    * @param {keyof JSX.IntrinsicElements} [props.as] - Overwrite the tag name of the HTML element at render time.
    * @returns {React.ForwardRefExoticComponent<AllHTMLAttributes<T>>} customTag - The created element.
    */
-  const customTag = forwardRef<T, CustomTagArgs<T>>(
+  const customTag: CustomTag<T> = forwardRef<T, CustomTagArgs<T>>(
     ({ as, className = "", children, ...props }, ref) =>
       createElement(
         as || defaultTag,
@@ -57,6 +67,7 @@ export default function createStyle<T = ElementType>(
   )
 
   customTag.displayName = displayName || `*${defaultTag}`
+  customTag.classNames = classes
 
   return customTag
 }

@@ -68,6 +68,9 @@ export default function createStyle<T = ElementType>(
 
   customTag.displayName = displayName || `*${defaultTag}`
   customTag.classNames = classes
+  customTag.toString = function toString() {
+    return this.classNames
+  }
 
   return customTag
 }

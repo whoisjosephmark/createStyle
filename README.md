@@ -151,7 +151,7 @@ const AppendsParagraphClasses: FC<{
   children: ReactNode
   Tag: FC<HTMLAttributes>
 }> = ({ Tag, children }) => {
-  return <Tag className={P.classNames}>{children}</Tag>
+  return <Tag className={P}>{children}</Tag> // or: return <Tag className={P.toString()}>{children}</Tag>
 }
 ```
 

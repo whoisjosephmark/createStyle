@@ -1,5 +1,7 @@
 # createStyle
 
+[![Run Tests](https://github.com/whoisjosephmark/createStyle/actions/workflows/test.yml/badge.svg?branch=main)](https://github.com/whoisjosephmark/createStyle/actions/workflows/test.yml)
+
 createStyle is a simple utility for creating reusable styled React components focused around CSS classes rather than discrete styles.
 
 It works great for Tailwind based styling frameworks and offers a fast way to stand up a pure component without the heaviness of delivering a full React component.

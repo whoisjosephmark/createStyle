@@ -41,10 +41,10 @@
   },
   "homepage": "https://github.com/whoisjosephmark/createStyle#readme",
   "devDependencies": {
-    "@josephmark/eslint-config-react": "^1.0.5",
-    "eslint": "^8.34.0",
-    "prettier": "^2.8.4",
-    "typescript": "^4.9.5"
+    "@josephmark/eslint-config-react": "^1.0.11",
+    "eslint": "^9.4.0",
+    "prettier": "^3.3.1",
+    "typescript": "^5.4.5"
   },
   "peerDependencies": {
     "@types/react": "^18.0.28",

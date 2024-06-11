@@ -17,7 +17,6 @@ type ElementType =
 
 export type CustomTagArgs<T = ElementType> = {
   as?: keyof JSX.IntrinsicElements
-  inert?: string | null
 } & AllHTMLAttributes<T>
 
 export type CustomTag<T = ElementType> = {

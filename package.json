@@ -13,7 +13,7 @@
     }
   },
   "scripts": {
-    "test": "eslint ./src/* && tsc --noEmit",
+    "test": "eslint --no-ignore ./src/* && tsc --noEmit",
     "build": "npm run build:esm && npm run build:cjs",
     "build:esm": "tsc",
     "build:cjs": "tsc --module commonjs --outDir lib/cjs",
@@ -41,13 +41,13 @@
   },
   "homepage": "https://github.com/whoisjosephmark/createStyle#readme",
   "devDependencies": {
-    "@josephmark/eslint-config-react": "^1.0.11",
+    "@josephmark/eslint-config-react": "^1.1.0",
     "eslint": "^9.4.0",
     "prettier": "^3.3.1",
     "typescript": "^5.4.5"
   },
   "peerDependencies": {
-    "@types/react": "^18.0.28",
-    "react": "^18.2.0"
+    "@types/react": "^18.3.3",
+    "react": "^18.3.1"
   }
 }

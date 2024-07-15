@@ -38,7 +38,7 @@ export default function createStyle<T = ElementType>(
   defaultTag: keyof JSX.IntrinsicElements,
   classes = "",
   defaultProps: { displayName?: string } & AllHTMLAttributes<T> = {}
-) {
+): CustomTag<T> {
   const {
     displayName = null,
     className: propClassName,

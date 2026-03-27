@@ -3,6 +3,7 @@ import {
   createElement,
   forwardRef,
   ForwardRefExoticComponent,
+  JSX,
   RefAttributes,
 } from "react"
 

@@ -21,6 +21,7 @@ export type CustomTagArgs<T = ElementType> = {
 
 export type CustomTag<T = ElementType> = {
   classNames?: string
+  props?: { displayName?: string } & AllHTMLAttributes<T>
 } & ForwardRefExoticComponent<CustomTagArgs<T> & RefAttributes<T>>
 
 /**
@@ -67,6 +68,7 @@ export default function createStyle<T = ElementType>(
 
   customTag.displayName = displayName || `*${defaultTag}`
   customTag.classNames = classes
+  customTag.props = defaultProps
   customTag.toString = function toString() {
     return this.classNames
   }

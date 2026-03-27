@@ -157,6 +157,31 @@ const AppendsParagraphClasses: FC<{
 }
 ```
 
+### Retrieving default props from a tag
+
+```tsx
+import type { FC, HTMLAttributes, ReactNode } from "react"
+import createStyle from "@josephmark/createstyle"
+const Checkbox = createStyle("input", "rounded border border-black", {
+  style: {
+    boxShadow: "0 0 0 4px -1px black",
+  },
+})
+
+const CheckboxGroup = () => {
+  return (
+    <div style={{ "--checkbox-bg": "red" }}>
+      <Checkbox
+        style={{
+          ...Checkbox.props.style,
+          backgroundColor: "var(--checkbox-bg)",
+        }}
+      />
+    </div>
+  )
+}
+```
+
 ### Theme-able components
 
 ```tsx

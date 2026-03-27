@@ -7,16 +7,16 @@
   "types": "./lib/esm/index.d.ts",
   "exports": {
     ".": {
-      "require": "./lib/cjs/index.js",
-      "import": "./lib/esm/index.js",
+      "require": "./lib/cjs/index.cjs",
+      "import": "./lib/esm/index.mjs",
       "types": "./lib/esm/index.d.ts"
     }
   },
   "scripts": {
     "test": "eslint --no-ignore ./src/* && tsc --noEmit",
     "build": "npm run build:esm && npm run build:cjs",
-    "build:esm": "tsc",
-    "build:cjs": "tsc --module commonjs --outDir lib/cjs && node scripts/fix-cjs-interop.mjs",
+    "build:esm": "tsdown",
+    "build:cjs": "tsdown --format cjs --outDir lib/cjs --declaration --emitDeclarationOnly",
     "prepublishOnly": "npm run -s build"
   },
   "repository": {
@@ -29,8 +29,10 @@
     "typescript"
   ],
   "files": [
-    "lib/**/*.js",
-    "lib/**/*.d.ts",
+    "lib/**/*.mjs",
+    "lib/**/*.cjs",
+    "lib/**/*.d.mts",
+    "lib/**/*.d.cts",
     "lib/**/*.map"
   ],
   "author": "@floatingdino",
@@ -43,6 +45,7 @@
     "@josephmark/eslint-config-react": "^1.1.0",
     "eslint": "^9.4.0",
     "prettier": "^3.3.1",
+    "tsdown": "^0.21.6",
     "typescript": "^5.5.3"
   },
   "peerDependencies": {

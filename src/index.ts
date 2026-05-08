@@ -16,25 +16,100 @@ type ElementType =
   | HTMLDataElement
   | HTMLElement
 
+/**
+ * Props accepted by any component created with `createStyle` at render time.
+ * Extends the element's standard HTML attributes with an `as` override.
+ *
+ * @template T - The underlying HTML element type (e.g. `HTMLButtonElement`).
+ */
 export type CustomTagArgs<T = ElementType> = {
+  /** Swap the rendered HTML tag at runtime without redefining the component. */
   as?: keyof JSX.IntrinsicElements
 } & AllHTMLAttributes<T>
 
+/**
+ * The component type returned by `createStyle`.
+ * A `forwardRef` React component with static properties for introspecting
+ * the class string and default props set at creation time.
+ *
+ * @template T - The underlying HTML element type (e.g. `HTMLButtonElement`).
+ *
+ * @property classNames - The CSS class string provided at creation time.
+ * @property props - The default props provided at creation time.
+ * @property toString - Returns `classNames`, enabling `className={MyTag}` usage.
+ */
 export type CustomTag<T = ElementType> = {
   classNames?: string
   props?: { displayName?: string } & AllHTMLAttributes<T>
 } & ForwardRefExoticComponent<CustomTagArgs<T> & RefAttributes<T>>
 
 /**
- * Creates a re-usable element with pre-set classnames
- * Great for building generic, pure, Tailwind components
+ * Creates a reusable React component with pre-set CSS class names.
+ * Ideal for Tailwind-based design systems. Think `styled-components` but class-based.
  *
- * @template T - The type of the HTML element to be created.
- * @param {keyof JSX.IntrinsicElements} defaultTag - The default tag name of the HTML element to be created.
- * @param {string} classes - The pre-set classnames to be applied to the created element.
- * @param {AllHTMLAttributes<T>} defaultProps - The default props for the created element.
- * @param {string} [defaultProps.displayName] - The display name of the created element (for devtools!).
- * @returns {React.ForwardRefExoticComponent<AllHTMLAttributes<T>>} - The created element.
+ * Classes passed via `className` at render time are **appended** to the pre-set classes.
+ * The returned component also supports an `as` prop to swap the HTML tag at runtime,
+ * and forwards refs to the underlying DOM element.
+ *
+ * The returned `CustomTag` exposes:
+ * - `.classNames` — the class string set at creation time
+ * - `.props` — the default props set at creation time
+ * - `.toString()` — returns `.classNames`, so `className={MyTag}` works directly
+ *
+ * @template T - The underlying HTML element type for prop/ref inference (e.g. `HTMLButtonElement`).
+ * @param defaultTag - The HTML tag to render by default.
+ * @param classes - CSS class string applied to every instance.
+ * @param defaultProps - Default HTML attributes merged with per-render props.
+ *   `displayName` is consumed for React devtools and not forwarded to the DOM.
+ * @returns A `forwardRef` React component (`CustomTag<T>`) with static `.classNames` and `.props`.
+ *
+ * @example Basic usage
+ * ```tsx
+ * const H1 = createStyle("h1", "text-lg font-serif leading-[1.5]")
+ * const P  = createStyle("p",  "tracking-wide")
+ *
+ * <H1 className="mb-5">Hello</H1>  // renders: class="text-lg font-serif leading-[1.5] mb-5"
+ * ```
+ *
+ * @example Override tag at render time with `as`
+ * ```tsx
+ * const H3 = createStyle("h3", "text-lg tracking-wide")
+ * <H3 as="h1">Semantically h1, styled as h3</H3>
+ * ```
+ *
+ * @example Typed generic for correct ref and prop types
+ * ```ts
+ * const Button = createStyle<HTMLButtonElement>("button", "rounded bg-red-500 text-white")
+ * ```
+ *
+ * @example Default props (e.g. input type)
+ * ```ts
+ * const Checkbox = createStyle("input", "rounded border", { type: "checkbox" })
+ * ```
+ *
+ * @example Display name for React devtools
+ * ```ts
+ * const Card = createStyle("article", "rounded p-2 bg-white", { displayName: "Card" })
+ * ```
+ *
+ * @example Extract class string for use on other elements
+ * ```tsx
+ * const P = createStyle("p", "leading-[1.2] text-[1rem]")
+ * <div className={P.classNames}>same classes, different element</div>
+ * ```
+ *
+ * @example Dynamic classes with clsx
+ * ```tsx
+ * const Btn = createStyle("button", "rounded py-2 px-4", { type: "button" })
+ * <Btn className={clsx(active ? "bg-red-500" : "bg-blue-500")}>Click</Btn>
+ * ```
+ *
+ * @example Forwarded ref
+ * ```tsx
+ * const Container = createStyle<HTMLDivElement>("div", "max-w-screen-xl mx-auto")
+ * const ref = useRef<HTMLDivElement>(null)
+ * <Container ref={ref} />
+ * ```
  */
 export default function createStyle<T = ElementType>(
   defaultTag: keyof JSX.IntrinsicElements,
@@ -71,7 +146,7 @@ export default function createStyle<T = ElementType>(
   customTag.classNames = classes
   customTag.props = defaultProps
   customTag.toString = function toString() {
-    return this.classNames
+    return this.classNames || ""
   }
 
   return customTag

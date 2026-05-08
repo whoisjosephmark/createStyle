@@ -1,6 +1,0 @@
-{
-  "extends": ["@josephmark/react"],
-  "rules": {
-    "react/require-default-props": "off"
-  }
-}

@@ -1,0 +1,130 @@
+# createStyle
+
+A zero-dependency React utility (~1kb minified, ~500b gzipped) that creates reusable styled components from CSS class strings. Designed for Tailwind CSS but works with any class-based styling system. Think `styled-components` but class-based, not CSS-in-JS.
+
+## Install
+
+```
+npm install @josephmark/createstyle
+```
+
+## Signature
+
+```ts
+createStyle<T = ElementType>(
+  defaultTag: keyof JSX.IntrinsicElements,
+  classes?: string,
+  defaultProps?: { displayName?: string } & AllHTMLAttributes<T>
+): CustomTag<T>
+```
+
+Returns a `CustomTag<T>`: a `forwardRef` React component with extra properties:
+- `.classNames: string` — the pre-set class string passed at creation time
+- `.props` — the default props passed at creation time
+- `.toString()` — returns `.classNames`, enabling `className={MyTag}` usage
+
+Classes passed at render time via `className` are **appended** to the pre-set classes, never replaced.
+
+## Basic usage
+
+```tsx
+import createStyle from "@josephmark/createstyle"
+
+const H1 = createStyle("h1", "text-lg font-serif leading-[1.5]")
+const P  = createStyle("p",  "tracking-wide")
+
+const Header = () => (
+  <header>
+    <H1 className="mb-5">Hello</H1>
+    <P>World</P>
+  </header>
+)
+```
+
+## Key patterns
+
+### Override tag at render time (`as` prop)
+```tsx
+const H3 = createStyle("h3", "text-lg tracking-wide")
+<H3 as="h1">Semantically an h1, styled as h3</H3>
+```
+
+### Generic for correct ref and prop types
+```ts
+const Button = createStyle<HTMLButtonElement>("button", "rounded bg-red-500 text-white")
+```
+
+### Default props (e.g. input type)
+```ts
+const Checkbox = createStyle("input", "rounded border", { type: "checkbox" })
+```
+
+### Display name for React devtools
+```ts
+const Card = createStyle("article", "rounded p-2 bg-white shadow-lg", { displayName: "Card" })
+```
+
+### Extract class string for use elsewhere
+```tsx
+const P = createStyle("p", "leading-[1.2] text-[1rem]")
+// All three are equivalent:
+<div className={P}>...</div>
+<div className={P.toString()}>...</div>
+<div className={P.classNames}>...</div>
+```
+
+### Extract default props
+```tsx
+const Checkbox = createStyle("input", "rounded", { style: { boxShadow: "0 0 0 4px black" } })
+<Checkbox style={{ ...Checkbox.props.style, backgroundColor: "red" }} />
+```
+
+### Dynamic classes — works with clsx or any string
+```tsx
+import clsx from "clsx"
+const Btn = createStyle("button", "rounded py-2 px-4", { type: "button" })
+<Btn className={clsx(active ? "bg-red-500" : "bg-blue-500")}>Click</Btn>
+```
+
+### Themed components
+```tsx
+const THEMES = {
+  serif: createStyle("h2", "font-serif text-lg"),
+  sans:  createStyle("h2", "font-sans text-xl tracking-tight"),
+}
+const ThemableHeading = ({ theme, children }) => {
+  const C = THEMES[theme]
+  return <C>{children}</C>
+}
+```
+
+### Forwarded refs
+```tsx
+const Container = createStyle<HTMLDivElement>("div", "max-w-screen-xl mx-auto")
+const ref = useRef<HTMLDivElement>(null)
+<Container ref={ref} />
+```
+
+## Types
+
+```ts
+/** Props accepted by any createStyle component at render time */
+type CustomTagArgs<T = ElementType> = {
+  /** Overwrite the HTML tag at render time without changing the component definition */
+  as?: keyof JSX.IntrinsicElements
+} & AllHTMLAttributes<T>
+
+/** The component type returned by createStyle — a forwardRef component with extra static properties */
+type CustomTag<T = ElementType> = {
+  /** The CSS class string set at creation time */
+  classNames?: string
+  /** The default props set at creation time (excluding displayName) */
+  props?: { displayName?: string } & AllHTMLAttributes<T>
+} & ForwardRefExoticComponent<CustomTagArgs<T> & RefAttributes<T>>
+```
+
+## Notes
+
+- `displayName` in `defaultProps` sets `component.displayName` for React devtools and is stripped from rendered DOM props
+- Class merge order: `classes` (creation) → `className` from `defaultProps` → `className` from render props
+- The package has no runtime dependencies; React is a peer dependency

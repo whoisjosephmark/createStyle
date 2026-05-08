@@ -26,7 +26,13 @@
   "keywords": [
     "react",
     "tailwind",
-    "typescript"
+    "typescript",
+    "styled-components",
+    "classnames",
+    "css-in-js",
+    "utility",
+    "forwardRef",
+    "components"
   ],
   "files": [
     "lib/**/*.mjs",
@@ -44,9 +50,9 @@
   "devDependencies": {
     "@josephmark/eslint-config-react": "^1.1.0",
     "eslint": "^9.4.0",
-    "prettier": "^3.3.1",
-    "tsdown": "^0.21.6",
-    "typescript": "^5.5.3"
+    "prettier": "^3.8.3",
+    "tsdown": "^0.22.0",
+    "typescript": "^6.0.3"
   },
   "peerDependencies": {
     "@types/react": "^18.3.3 || ^19.0.0",

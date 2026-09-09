@@ -12,7 +12,7 @@ npm install @josephmark/createstyle
 
 ```ts
 createStyle<T = ElementType>(
-  defaultTag: keyof JSX.IntrinsicElements,
+  defaultTag: React.ElementType,
   classes?: string,
   defaultProps?: { displayName?: string } & AllHTMLAttributes<T>
 ): CustomTag<T>
@@ -44,10 +44,35 @@ const Header = () => (
 ## Key patterns
 
 ### Override tag at render time (`as` prop)
+
+`as` accepts an intrinsic tag name or any React component.
+
 ```tsx
 const H3 = createStyle("h3", "text-lg tracking-wide")
 <H3 as="h1">Semantically an h1, styled as h3</H3>
 ```
+
+### Render as a React component
+
+The merged class string is passed to the component as `className`, so the component
+must accept and apply `className`.
+
+```tsx
+import Link from "next/link"
+const Button = createStyle("button", "rounded-full bg-red-500 px-4 py-2")
+<Button as={Link} href="/signup">Sign up</Button>
+```
+
+A component can also be the default tag:
+
+```tsx
+const StyledLink = createStyle(Link, "underline underline-offset-2")
+<StyledLink href="/about">About</StyledLink>
+```
+
+Limitation: render-time props are typed as `AllHTMLAttributes`, so props on the target
+component that aren't HTML attributes are a type error (`href` is fine; react-router's
+`to` is not). Wrap the component or cast in that case.
 
 ### Generic for correct ref and prop types
 ```ts
@@ -110,9 +135,13 @@ const ref = useRef<HTMLDivElement>(null)
 ```ts
 /** Props accepted by any createStyle component at render time */
 type CustomTagArgs<T = ElementType> = {
-  /** Overwrite the HTML tag at render time without changing the component definition */
-  as?: keyof JSX.IntrinsicElements
-} & AllHTMLAttributes<T>
+  /** Overwrite the rendered tag or component at render time. Accepts an intrinsic
+   *  tag name ("h1") or any React component. */
+  as?: React.ElementType
+  // `as` is omitted from AllHTMLAttributes, which declares its own `as?: string`
+  // for `<link rel="preload">`; without the Omit the two intersect down to
+  // `React.ElementType & string`, which rejects every component.
+} & Omit<AllHTMLAttributes<T>, "as">
 
 /** The component type returned by createStyle — a forwardRef component with extra static properties */
 type CustomTag<T = ElementType> = {
@@ -126,5 +155,6 @@ type CustomTag<T = ElementType> = {
 ## Notes
 
 - `displayName` in `defaultProps` sets `component.displayName` for React devtools and is stripped from rendered DOM props
+- Without an explicit `displayName`, the devtools name is `*` plus the tag name, or the component's `displayName`/`name` when the default tag is a component
 - Class merge order: `classes` (creation) → `className` from `defaultProps` → `className` from render props
 - The package has no runtime dependencies; React is a peer dependency

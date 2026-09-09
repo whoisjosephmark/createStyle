@@ -1,9 +1,9 @@
 import {
   AllHTMLAttributes,
   createElement,
+  ElementType as ReactElementType,
   forwardRef,
   ForwardRefExoticComponent,
-  JSX,
   RefAttributes,
 } from "react"
 
@@ -16,6 +16,18 @@ type ElementType =
   | HTMLDataElement
   | HTMLElement
 
+/** Readable label for a tag or component, used for the devtools display name. */
+function tagName(tag: ReactElementType): string {
+  if (typeof tag === "string") {
+    return tag
+  }
+  return (
+    (tag as { displayName?: string }).displayName ||
+    (tag as { name?: string }).name ||
+    "Component"
+  )
+}
+
 /**
  * Props accepted by any component created with `createStyle` at render time.
  * Extends the element's standard HTML attributes with an `as` override.
@@ -23,9 +35,15 @@ type ElementType =
  * @template T - The underlying HTML element type (e.g. `HTMLButtonElement`).
  */
 export type CustomTagArgs<T = ElementType> = {
-  /** Swap the rendered HTML tag at runtime without redefining the component. */
-  as?: keyof JSX.IntrinsicElements
-} & AllHTMLAttributes<T>
+  /**
+   * Swap what gets rendered at runtime without redefining the component.
+   * Accepts an intrinsic tag name (`"h1"`) or any React component
+   * (`Link`, `motion.div`, another `createStyle` component).
+   */
+  as?: ReactElementType
+  // `AllHTMLAttributes` declares its own `as?: string` (for `<link rel="preload">`),
+  // which would otherwise intersect ours down to `ReactElementType & string`.
+} & Omit<AllHTMLAttributes<T>, "as">
 
 /**
  * The component type returned by `createStyle`.
@@ -48,8 +66,8 @@ export type CustomTag<T = ElementType> = {
  * Ideal for Tailwind-based design systems. Think `styled-components` but class-based.
  *
  * Classes passed via `className` at render time are **appended** to the pre-set classes.
- * The returned component also supports an `as` prop to swap the HTML tag at runtime,
- * and forwards refs to the underlying DOM element.
+ * The returned component also supports an `as` prop to swap the rendered tag or
+ * component at runtime, and forwards refs to the underlying DOM element.
  *
  * The returned `CustomTag` exposes:
  * - `.classNames` — the class string set at creation time
@@ -57,7 +75,7 @@ export type CustomTag<T = ElementType> = {
  * - `.toString()` — returns `.classNames`, so `className={MyTag}` works directly
  *
  * @template T - The underlying HTML element type for prop/ref inference (e.g. `HTMLButtonElement`).
- * @param defaultTag - The HTML tag to render by default.
+ * @param defaultTag - The HTML tag or React component to render by default.
  * @param classes - CSS class string applied to every instance.
  * @param defaultProps - Default HTML attributes merged with per-render props.
  *   `displayName` is consumed for React devtools and not forwarded to the DOM.
@@ -75,6 +93,21 @@ export type CustomTag<T = ElementType> = {
  * ```tsx
  * const H3 = createStyle("h3", "text-lg tracking-wide")
  * <H3 as="h1">Semantically h1, styled as h3</H3>
+ * ```
+ *
+ * @example Render as a React component
+ * `as` accepts any component, not just intrinsic tags. The merged class string is
+ * passed along as `className`, so the component must accept and apply it. Props that
+ * aren't standard HTML attributes are still rejected by the type.
+ * ```tsx
+ * const Button = createStyle("button", "rounded-full bg-red-500 px-4 py-2")
+ * <Button as={Link} href="/signup">Sign up</Button>
+ * ```
+ *
+ * @example Use a component as the default tag
+ * ```tsx
+ * const StyledLink = createStyle(Link, "underline underline-offset-2")
+ * <StyledLink href="/about">About</StyledLink>
  * ```
  *
  * @example Typed generic for correct ref and prop types
@@ -112,7 +145,7 @@ export type CustomTag<T = ElementType> = {
  * ```
  */
 export default function createStyle<T = ElementType>(
-  defaultTag: keyof JSX.IntrinsicElements,
+  defaultTag: ReactElementType,
   classes = "",
   defaultProps: { displayName?: string } & AllHTMLAttributes<T> = {}
 ): CustomTag<T> {
@@ -123,7 +156,7 @@ export default function createStyle<T = ElementType>(
   } = defaultProps
   /**
    * @param {AllHTMLAttributes<T>} props - The props to be passed to the created element.
-   * @param {keyof JSX.IntrinsicElements} [props.as] - Overwrite the tag name of the HTML element at render time.
+   * @param {ReactElementType} [props.as] - Overwrite the rendered tag or component at render time.
    * @returns {React.ForwardRefExoticComponent<AllHTMLAttributes<T>>} customTag - The created element.
    */
   const customTag: CustomTag<T> = forwardRef<T, CustomTagArgs<T>>(
@@ -142,7 +175,7 @@ export default function createStyle<T = ElementType>(
       )
   )
 
-  customTag.displayName = displayName || `*${defaultTag}`
+  customTag.displayName = displayName || `*${tagName(defaultTag)}`
   customTag.classNames = classes
   customTag.props = defaultProps
   customTag.toString = function toString() {

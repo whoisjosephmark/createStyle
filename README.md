@@ -52,7 +52,7 @@ const Header = () => (
 
 `createStyle` is a function that accepts three arguments
 
-1. Default Tag (required) - the semantic HTML tag you want in the DOM whenever you use this element (this can be overwritten later)
+1. Default Tag (required) - the semantic HTML tag, or a React component, you want rendered whenever you use this element (this can be overwritten later)
 2. Classes (optional) - the CSS class names you want applied to the element by default (these can be appended to later)
 3. Default Props (optional) - tag props you want to set on the element other than class, including display name (for devtools)
 
@@ -60,7 +60,9 @@ The function returns a React component with `forwardRef`.
 
 ## Advanced Usage
 
-### Overwriting HTML Tags
+### Overwriting Tags
+
+The `as` prop accepts either an intrinsic HTML tag name or any React component.
 
 ```tsx
 import createStyle from "@josephmark/createstyle"
@@ -71,6 +73,39 @@ const Header = () => (
   <H3 as="h1">createStyle is an open-source element generator</H3>
 )
 ```
+
+### Rendering as a React component
+
+Pass a component to `as` to keep your styles while delegating rendering to it. The
+merged class string is handed to the component as `className`, so it needs to accept
+and apply that prop.
+
+```tsx
+import Link from "next/link"
+import createStyle from "@josephmark/createstyle"
+
+const Button = createStyle("button", "rounded-full bg-red-500 px-4 py-2")
+
+const CTA = () => (
+  <Button as={Link} href="/signup">
+    Sign up
+  </Button>
+)
+```
+
+The same works for a component as the *default* tag, so every instance renders through it:
+
+```tsx
+const StyledLink = createStyle(Link, "underline underline-offset-2")
+
+const Nav = () => <StyledLink href="/about">About</StyledLink>
+```
+
+> [!NOTE]
+> Render-time props are typed as standard HTML attributes, so props on the target
+> component that aren't HTML attributes are rejected by TypeScript. `href` works
+> (it's a real attribute); something like react-router's `to` is not. Wrap the
+> component or cast in that case.
 
 ### Using Generics
 
